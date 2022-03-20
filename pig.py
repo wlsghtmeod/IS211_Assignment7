@@ -1,9 +1,8 @@
 import random
-import argparse
 
 class Player():
     def __init__(self):
-        self.total_score = 0
+        self.total_score = 90
 
     def accum(self, score):
         self.total_score += score
@@ -11,14 +10,11 @@ class Player():
         
 def referee(player_name, score):
     if score >= 100:
-        print(f"The winner is {player_name}.")
-        return 1
-    
-    else:
-        return 0
-    
+        print(f"The winner is {player_name} with {score}.")
+        exit()
 
-def roll_the_die() -> int: #Rolls the die and send score to computer, return score to accum if not 1.
+
+def roll_the_die() -> int:
     Die = random.randint(1,6)
     return Die
 
@@ -27,58 +23,57 @@ def turn_control(Player_1,Player_2):
     someone_won = False
     Player_1_End = False
     Player_2_End = False
-    Turn = 1
-    temp_score = 0
+    current_turn = 1
+    player_1_temp_score = 0
+    player_2_temp_score = 0
     print("First turn starts with Player 1.\n")
 
     while someone_won == False:
-        print(f"Turn {Turn}")
         while Player_1_End == False:
             print("Player 1")
             current_die_num = roll_the_die()
             print(f"Die result is {current_die_num}.")
             if current_die_num == 1:
-                print("Die result is 1. No score accumulated.\n")
-                print("End of turn.\n")
-                Player_1_End = True
+                print("No score accumulated.\n")
+                player_1_temp_score = 0
+                break
             else:
-                temp_score += current_die_num
-                user_input = input('Do you wish to continue? Y/N: \n')
-                print(f"Temp score: {temp_score}")
-                if user_input == 'Y' and user_input == 'y':
+                player_1_temp_score += current_die_num
+                user_input = input('Do you wish to roll or hold? r/h: \n')
+                print(f"Player 1 score of this turn: {player_1_temp_score}\n\n")
+                if user_input == 'r':
                     Player_1_End = False
-                else:
-                    Player_1.accum(temp_score)
-                    Player_1_End = True
-            if referee("Player 1",Player_1.total_score) == 1:
-                print("Winner is Player 1!")
-                someone_won = True
-
-        temp_score = 0
+                elif user_input == 'h':
+                    Player_1.accum(player_1_temp_score)
+                    player_1_temp_score = 0
+                    referee("Player 1",Player_1.total_score)
+                    break
+     
         while Player_2_End == False:
             print("Player 2")
             current_die_num = roll_the_die()
             print(f"Die result is {current_die_num}.")
             if current_die_num == 1:
-                print("Die result is 1. No score accumulated.\n")
+                print("No score accumulated.\n")
                 print("End of turn.\n")
-                Player_1_End = True
+                player_2_temp_score = 0
+                break
             else:
-                temp_score += current_die_num
-                user_input = input('Do you wish to continue? Y/N: \n')
-                print(f"Temp score: {temp_score}")
-                if user_input == 'Y' and user_input == 'y':
+                player_2_temp_score += current_die_num
+                user_input = input('Do you wish to roll or hold? r/h: \n')
+                print(f"Player 2 score of this turn: {player_2_temp_score}\n")
+                if user_input == 'r':
                     Player_2_End = False
-                else:
-                    Player_2.accum(temp_score)
-                    Player_2_End = True
-            if referee("Player 1",Player_2.total_score) == 1:
-                print("Winner is Player 2!")
-                someone_won = True
+                elif user_input == 'h':
+                    Player_2.accum(player_2_temp_score)
+                    player_2_temp_score = 0
+                    referee("Player 2",Player_2.total_score)
+                    break
+        print(f"Player 1 score: {Player_1.total_score}")
+        print(f"Player 2 score: {Player_2.total_score}\n\n")
+        current_turn += 1
+        print(f"Turn: {current_turn}\n")
         
-        Turn += 1
-        
-               
 
 def main():
     Player_1 = Player()
@@ -86,8 +81,6 @@ def main():
 
     turn_control(Player_1, Player_2)
 
-
-        
 
 if __name__ == "__main__":
     main()
